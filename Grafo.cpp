@@ -182,13 +182,25 @@ void GRAFO::exibe_matrizComPesos(){
           printf("\nVertice: %lu ", i+1);
             for (j = 0; j < num_vertices; j++)
                 if (ptr_vertices[i].adjacencia_aresta(j) == TRUE)
-                    printf("\tAresta com: %lu\tPeso: %lu ", j+1, ptr_vertices[i].peso_aresta(j));
+                    printf("\tAresta com: %lu\tPeso: %ld ", j+1, ptr_vertices[i].peso_aresta(j));
         }
       printf("\nTotal de arestas: %lu\n", qtde_arestas());
   }
   else
       printf("\nMatriz não gerada ou nula\n");
    
+}
+
+void GRAFO::exibe_Valoresvertices(){
+  ULONG i, j;
+  
+  if (assigned(*matriz_adjacencia)){
+      for (i=0 ; i < num_vertices ; i++)            
+          printf("\nVertice: %lu\tValor: %ld", i+1, ptr_vertices[i].get_valor());
+  }
+  else
+      printf("\nMatriz não gerada ou nula\n");
+  printf("\n");
 }
 
 ULONG GRAFO::qtde_arestas ()
@@ -234,6 +246,48 @@ void GRAFO::bfs(CARDINAL x){
     }
     printf("Sequencia de vertices visitados:"); sequenciaVisita->exibe(); printf("\n");
     
+}
+
+void GRAFO::dfs(CARDINAL x){
+    gera_matrizAdjacencia(2);                   //garantir que a matriz de adjacencia sera nao direcionada
+    PFILA f = new FILA();
+    PLISTA sequenciaVisita = new LISTA();
+    CARDINAL verticeVisitado[num_vertices];     
+    for (int i = 0; i < num_vertices ; i++) verticeVisitado[i] = 0;   //ninguem foi vistado
+        
+    sequenciaVisita->adiciona(x);                                      //marca a primeira visitação
+    verticeVisitado[x-1] = 1;
+    
+    int verticeAtual = x;
+    
+    f->push(x);
+    BOOL ida = FALSE;
+    while (f->tamanho() > 0){                                         //devo procurar ate nao existir mais arestas         
+        for (int i = 0; i < num_vertices; i++)        
+            if (matriz_adjacencia[verticeAtual][i] == 1 && verticeVisitado[i] == 0){ //garantir que nao seja aresta com o mesmo vertice
+                f->push(i+1);                       //empilhar APENAS o primeiro vertice adjacente ao vertice atual       
+                //f->pop(x);
+                ida = TRUE;
+                break;
+        }
+        if (ida == FALSE){
+            
+        }
+    }
+    
+    printf("Sequencia de vertices visitados:"); sequenciaVisita->exibe(); printf("\n");     
+}
+
+void GRAFO::sp(CARDINAL s, CARDINAL t){
+    ptr_vertices[s-1].set_valor(0);
+    for (int i = 0; i < num_vertices; i++){
+        for (int j = 0; j < num_vertices; j++){
+            if (ptr_vertices[i].adjacencia_aresta(j))
+                if (ptr_vertices[j].get_valor() > ptr_vertices[i].get_valor() + ptr_vertices[i].peso_aresta(j))
+                    ptr_vertices[j].set_valor(ptr_vertices[i].get_valor() + ptr_vertices[i].peso_aresta(j));
+        }
+    }
+    exibe_Valoresvertices();
 }
 
 

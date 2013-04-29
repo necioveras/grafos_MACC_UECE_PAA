@@ -59,6 +59,7 @@ class GRAFO
     void    exibe   (		       );
     void    exibe_matrizAdjacencia();
     void    exibe_matrizComPesos();
+    void    exibe_Valoresvertices();
     void    gera_matrizAdjacencia(CARDINAL sentido);
     
     inline  ULONG    qtde_vertices (  )  {return num_vertices;}
@@ -69,6 +70,8 @@ class GRAFO
     inline BOOL**  get_matriz_adjacencia () {return matriz_adjacencia;}
     
     void    bfs (CARDINAL x); 
+    void    dfs (CARDINAL x); 
+    void    sp  (CARDINAL s, CARDINAL t);
 };
 
 

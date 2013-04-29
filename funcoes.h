@@ -111,6 +111,28 @@ void exibe_ajuda(char *option){
         printf("Saída:\n");        
         printf("Será exibido uma sequencia de vertices visitados, iniciando no vertice x.\n");
     }
+    else if (strcasecmp(option,"dfs") == 0){
+        printf("\nÉ usado para executar a tecnica de Busca em Profundidade, do inlges Depth-first search.\n");
+        printf("Sintaxe:\n");        
+        printf("\t\t\t%s <x>\n", option);
+        printf("Parâmetro:\n");        
+        printf("<x>\n");
+        printf("Indica o vertice inicial da busca.\n");
+        printf("Saída:\n");        
+        printf("Será exibido uma sequencia de vertices visitados, iniciando no vertice x.\n");
+    }
+    else if (strcasecmp(option,"sp") == 0){
+        printf("\nÉ usado para executar a tecnica do caminho mínimo (short path) por meio do algoritmo de Bellman Ford.\n");
+        printf("Sintaxe:\n");        
+        printf("\t\t\t%s <s> <p>\n", option);
+        printf("Parâmetro:\n");        
+        printf("<s>\n");
+        printf("Indica o vertice inicial.\n");
+        printf("<t>\n");
+        printf("Indica o vertice final.\n");
+        printf("Saída:\n");        
+        printf("d\nx1\tx2\t...\txp\t, onde\n d = valor do caminho mínimo entre <s> e <t>\ncada x representa os vertices que formam o caminho mínimo.");
+    }
 }
 
 /*==========================================================================
@@ -145,6 +167,15 @@ void gerencia_comando(int argc, char *argv[]){
                else if (strcasecmp(argv[arg],"bfs") == 0){
                   int x = atoi(argv[++arg]);  
                   G->bfs(x);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
+               }
+               else if (strcasecmp(argv[arg],"dfs") == 0){
+                  int x = atoi(argv[++arg]);  
+                  G->dfs(x);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
+               }
+               else if (strcasecmp(argv[arg],"sp") == 0){
+                  int s = atoi(argv[++arg]);  
+                  int t = atoi(argv[++arg]);  
+                  G->sp(s,t);     //LE O PARAMETRO (itera DUAS VEZES a repetição para evitar engano de parametro)                   
                }
                else                                      //Parametro(s) para leitura (instâncias)
                   carrega_grafo (argv[arg]);
