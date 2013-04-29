@@ -45,7 +45,7 @@ class GRAFO
 
     PVERTICE ptr_vertices     ;
     ULONG    num_vertices     ;
-    BOOL     *matriz_adjacencia[];
+    BOOL   **matriz_adjacencia;
     
 
     void libera ();
@@ -67,6 +67,8 @@ class GRAFO
 
     BOOL    existe_aresta (ULONG v1, ULONG v2, CARDINAL sentido);
     inline BOOL**  get_matriz_adjacencia () {return matriz_adjacencia;}
+    
+    void    bfs (CARDINAL x); 
 };
 
 

@@ -101,6 +101,16 @@ void exibe_ajuda(char *option){
         printf("1 = grafo direcionado. Sentido de VOLTA\n");
         printf("2 = grafo não direcionado.\n");
     }
+    else if (strcasecmp(option,"bfs") == 0){
+        printf("\nÉ usado para executar a tecnica de Busca em Largura, do inlges Breadth-first search.\n");
+        printf("Sintaxe:\n");        
+        printf("\t\t\t%s <x>\n", option);
+        printf("Parâmetro:\n");        
+        printf("<x>\n");
+        printf("Indica o vertice inicial da busca.\n");
+        printf("Saída:\n");        
+        printf("Será exibido uma sequencia de vertices visitados, iniciando no vertice x.\n");
+    }
 }
 
 /*==========================================================================
@@ -130,8 +140,11 @@ void gerencia_comando(int argc, char *argv[]){
                   G->gera_matrizAdjacencia(sentido);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)
                   G->exibe_matrizAdjacencia(); 
                }
-               else if (strcasecmp(argv[arg],"pesos") == 0){                   
+               else if (strcasecmp(argv[arg],"pesos") == 0)
                    G->exibe_matrizComPesos();
+               else if (strcasecmp(argv[arg],"bfs") == 0){
+                  int x = atoi(argv[++arg]);  
+                  G->bfs(x);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
                }
                else                                      //Parametro(s) para leitura (instâncias)
                   carrega_grafo (argv[arg]);

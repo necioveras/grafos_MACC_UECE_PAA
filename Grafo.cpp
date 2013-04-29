@@ -1,5 +1,7 @@
 #include "Grafo.h"
 #include "tipos.h"
+#include "Fila.h"
+
 #include <stdio.h>
 /*==========================================================================
   =                                                                        =
@@ -137,19 +139,22 @@ void GRAFO::gera_matrizAdjacencia(CARDINAL sentido){
   }
   
   //zerar a matriz antiga
-  if (assigned(*matriz_adjacencia)){
-      delete[] *matriz_adjacencia;
+  if (assigned(matriz_adjacencia)){
+      for (int i = 0; i < num_vertices; i++)      
+          delete [] matriz_adjacencia[i];
+      delete[] matriz_adjacencia;
   }  
   
   //tirar da estrutura local e carregar para o atributo generico (privado) de matriz do GRAFO
   
-  *matriz_adjacencia = new BOOL[num_vertices];
+  matriz_adjacencia = new BOOL*[num_vertices];
   for (i=0 ; i < num_vertices ; i++){
     matriz_adjacencia[i] = new BOOL[num_vertices];
     for (j = 0; j < num_vertices; j++){
         matriz_adjacencia[i][j] = m[i][j];
     }
   }    
+    
 }
 
 void GRAFO::exibe_matrizAdjacencia(){
@@ -196,6 +201,39 @@ ULONG GRAFO::qtde_arestas ()
     soma = soma + ptr_vertices[i].grau_direcionado();
 
   return soma;
+}
+
+void GRAFO::bfs(CARDINAL x){    
+    gera_matrizAdjacencia(2);                   //garantir que a matriz de adjacencia sera nao direcionada
+    PFILA f = new FILA();
+    PLISTA sequenciaVisita = new LISTA();
+    CARDINAL verticeVisitado[num_vertices];     
+    for (int i = 0; i < num_vertices ; i++) verticeVisitado[i] = 0;   //ninguem foi vistado
+        
+    for (int i = 0; i < num_vertices; i++){   //empilhar os vertices de primeiro nivel (adjacentes ao vertice inicial)
+        if (matriz_adjacencia[x-1][i] == 1)
+            f->push(i+1);
+    }
+    verticeVisitado[x-1] = 1;                      //informar que o vertice X-1 ja foi visitado
+    sequenciaVisita->adiciona(x);                      //guarda o primeiro vertice (estado inicial )
+    
+    while (f->tamanho() > 0){                      //Enquanto a pilha não for vazia
+        //printf("Analise da fila: "); f->exibe(); printf("\n");     //Visualiza passo-a-passo as visitas        
+        int vertice;
+        f->pop(vertice);                               
+        
+        if (verticeVisitado[vertice-1] == 0){      //vertice NAO visitado
+            for (int i = 0; i < num_vertices; i++){   //empilhar os vertices adjacentes ao atual vistado
+                if (matriz_adjacencia[vertice-1][i] == 1)            
+                    f->push(i+1);
+                }
+            verticeVisitado[vertice-1] = 1;
+            sequenciaVisita->adiciona(vertice);
+        }
+        
+    }
+    printf("Sequencia de vertices visitados:"); sequenciaVisita->exibe(); printf("\n");
+    
 }
 
 

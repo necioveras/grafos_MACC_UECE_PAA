@@ -52,6 +52,29 @@ typedef double REAL, *PREAL;                // numero de ponto flutuante
 
 typedef void  *POINTER;                     // ponteiro generico
 
+/*==========================================================================
+=                                                                          =
+=                    Estrutura definida para as classes Lista e Fila       =
+=                                                                          =
+============================================================================
+*/
+
+typedef int    dado     ;
+
+typedef struct elem *pelem;
+
+typedef struct elem{
+    dado info;
+    pelem proximo;
+    pelem anterior;
+}velem[], *elens;
+
+typedef struct lista{
+    int nelem;
+    pelem primeiro;
+    pelem ultimo;
+}vlista[], *plistas;  
+
 
 
 /*==========================================================================
