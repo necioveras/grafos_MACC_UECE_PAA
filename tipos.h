@@ -31,6 +31,7 @@ typedef enum {FALSE, TRUE}  BOOL;           // logico
 #define BOOL     bool
 #define FALSE    false
 #define TRUE     true
+#define INFINITO 2147483647;
 #endif
 
 typedef unsigned long  int  CARDINAL, *PCARDINAL;

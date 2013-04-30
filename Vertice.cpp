@@ -1,6 +1,7 @@
 #include "Vertice.h"
 #include "tipos.h"
 #include <stdio.h>
+#include <math.h>
 /*==========================================================================
   =                                                                        =
   =                                                                        =
@@ -15,7 +16,8 @@ VERTICE::VERTICE()
 {
     ptr_arestas = NULL;
     num_arestas = 0   ;
-    valor       = 2147483647;     //INFINITO
+    valor       = INFINITO;
+    pi          = 0;
 }
 
 void VERTICE::libera ()
@@ -59,7 +61,7 @@ BOOL VERTICE::cria_linhaAdjencia(CARDINAL tamanho){
     
 }
 
-BOOL VERTICE::associa_aresta(ULONG id_v2, LONG peso){
+BOOL VERTICE::associa_aresta(ULONG id_v2, REAL peso){
   
   if (ptr_arestas[id_v2].adjacencia != TRUE){ //garantir que não será contabilizada a mesma aresta
      ptr_arestas[id_v2].adjacencia = TRUE;

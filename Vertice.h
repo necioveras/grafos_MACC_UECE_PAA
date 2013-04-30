@@ -28,7 +28,7 @@ class VERTICE
     typedef struct TARESTA          //Estrutura para Aresta
     {
 	    BOOL    adjacencia;       //Define a adjacencia com um vertice (o 'outro lado' da aresta) definido pelo índice
-            LONG    peso;          //Peso associado à aresta 
+            REAL    peso;          //Peso associado à aresta 
     }ARESTA[], *PARESTA;            //Matriz e ponteiro para aresta
 
   private:
@@ -36,6 +36,7 @@ class VERTICE
     PARESTA   ptr_arestas;
     ULONG     num_arestas;
     LONG      valor;
+    CARDINAL  pi;                    //valor usado para o calculo do caminho minimo (armazenamento do vertice anterior)
 
   public:
 
@@ -44,7 +45,7 @@ class VERTICE
 
     void  libera         (		  );
     BOOL  cria_linhaAdjencia  (CARDINAL tamanho);
-    BOOL  associa_aresta(ULONG id_v2, LONG peso);
+    BOOL  associa_aresta(ULONG id_v2, REAL peso);
     void  exibe          (PCHAR prompt);
     void  exibe_arestas (PCHAR prompt);
     
@@ -53,9 +54,12 @@ class VERTICE
     //retorna se ha ou nao adjacencia entre dois vertices
     inline BOOL adjacencia_aresta  (ULONG indice)    {return ptr_arestas[indice].adjacencia;}
     
-    inline CARDINAL peso_aresta (ULONG indice) {return ptr_arestas[indice].peso;}
+    inline REAL peso_aresta (ULONG indice) {return ptr_arestas[indice].peso;}
+    
     inline void     set_valor   (LONG  vr) {valor = vr;}
-    inline LONG     get_valor    () {return valor;}
+    inline LONG     get_valor   () {return valor;}
+    inline void     set_pi      (CARDINAL  pi) {this->pi = pi;}
+    inline LONG     get_pi      () {return pi;}
 
 };
 

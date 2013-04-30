@@ -42,7 +42,8 @@ BOOL GRAFO::carrega (PCHAR nomearquivo)
 {
   FILE     *ptr_file              ;
   PVERTICE  vertices              ;
-  ULONG     i,id_v1, id_v2, peso  ;  //Armazenar localmente todos as arestas com seus pesos do arquivo
+  ULONG     i,id_v1, id_v2        ;  //Armazenar localmente todos as arestas com seus pesos do arquivo
+  REAL      peso                  ;
   ULONG     n                     ;  //Numero de Vertices
 
   if ((ptr_file = fopen (nomearquivo,"rt")) == NULL)
@@ -67,7 +68,7 @@ BOOL GRAFO::carrega (PCHAR nomearquivo)
   while (retorno != EOF) {
      retorno = fscanf (ptr_file,"%lu",&id_v1); 
      retorno = fscanf (ptr_file,"%lu",&id_v2); //Uma aresta é formada por DOIS VERTICES
-     retorno = fscanf (ptr_file,"%lu",&peso); 
+     retorno = fscanf (ptr_file,"%lf",&peso); 
      //Associa a aresta lida para o vértice atual
      vertices[id_v1-1].associa_aresta(id_v2-1, peso);
   }
@@ -182,7 +183,7 @@ void GRAFO::exibe_matrizComPesos(){
           printf("\nVertice: %lu ", i+1);
             for (j = 0; j < num_vertices; j++)
                 if (ptr_vertices[i].adjacencia_aresta(j) == TRUE)
-                    printf("\tAresta com: %lu\tPeso: %ld ", j+1, ptr_vertices[i].peso_aresta(j));
+                    printf("\tAresta com: %lu\tPeso: %.1lf ", j+1, ptr_vertices[i].peso_aresta(j));
         }
       printf("\nTotal de arestas: %lu\n", qtde_arestas());
   }
@@ -264,7 +265,7 @@ void GRAFO::dfs(CARDINAL x){
     int passosVolta = 0;                                          //controlar a volta  
     while (f->tamanho() > 0){                                         //devo procurar ate nao existir mais arestas                 
         BOOL ida = FALSE;
-        for (int i = 0; i < num_vertices; i++)        
+        for (int i = 0; i < num_vertices; i++)                  //Procura por adjacencias NAO exploradas
             if (matriz_adjacencia[verticeAtual-1][i] == 1 && verticeVisitado[i] == 0){ //garantir que nao seja aresta com o mesmo vertice
                 f->push(i+1);                                         //empilhar APENAS o primeiro vertice adjacente ao vertice atual                       
                 if (verticeVisitado[verticeAtual-1] == 0){            //guardar caso o vertice nao tenha sido visitado, pois pode ser a VOLTA
@@ -282,22 +283,22 @@ void GRAFO::dfs(CARDINAL x){
                 sequenciaVisita->adiciona(verticeAtual);
                 verticeVisitado[verticeAtual-1] = 1;
             }
-            if (sequenciaVisita->get_elem(sequenciaVisita->tamanho() - passosVolta)->anterior != NULL){ //Nao estanos voltando ao vertice inicial
+            if (sequenciaVisita->get_elem(sequenciaVisita->tamanho() - passosVolta) != NULL){ //Se for NULL então voltamos um passo "depois" do vertice original
                 verticeAtual = sequenciaVisita->get_dado(sequenciaVisita->tamanho() - passosVolta);                        
                 passosVolta++;
             }
-            else {  //Voltamos ao vertice INICIAL. Se NAO exitir aresta a ser explorada entao, acabou o algoritmo
+            else {  //Voltamos ao vertice INICIAL. Se NAO exeitir aresta a ser explorada entao, acabou o algoritmo
                 int verticeInicial = sequenciaVisita->get_dado(0);                        
-                for (int i = 0; i < num_vertices; i++)        
-                        if (matriz_adjacencia[verticeInicial-1][i] == 1 && verticeVisitado[i] == 0){
+                for (int i = 0; i < num_vertices; i++)                               //Procura outras adjacencias
+                        if (matriz_adjacencia[verticeInicial-1][i] == 1 && verticeVisitado[i] == 0){  //Se encontrar, inicia TUDO novamente por outro caminho
                             ida = TRUE;
                             verticeAtual = verticeInicial;
                         }
-                if (ida == FALSE){
+                if (ida == FALSE){                            //Nao encontrou novas adjacencias, entao acabamos com a exploracao de profundidade
                     printf("Sequencia de vertices visitados (dfs):"); sequenciaVisita->exibe(); printf("\n");     
                     return;
                 }
-            }
+            }            
         }
     }        
 }
