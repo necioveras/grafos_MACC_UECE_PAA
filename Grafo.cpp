@@ -234,9 +234,9 @@ void GRAFO::bfs(CARDINAL x){
         int vertice;
         f->pop(vertice);                               
         
-        if (verticeVisitado[vertice-1] == 0){      //vertice NAO visitado
-            for (int i = 0; i < num_vertices; i++){   //empilhar os vertices adjacentes ao atual vistado
-                if (matriz_adjacencia[vertice-1][i] == 1)            
+        if (verticeVisitado[vertice-1] == 0){               //vertice NAO visitado
+            for (int i = 0; i < num_vertices; i++){         //empilhar os vertices adjacentes ao atual vistado
+                if (matriz_adjacencia[vertice-1][i] == 1)   //teste de adjacencia
                     f->push(i+1);
                 }
             verticeVisitado[vertice-1] = 1;
@@ -244,7 +244,7 @@ void GRAFO::bfs(CARDINAL x){
         }
         
     }
-    printf("Sequencia de vertices visitados:"); sequenciaVisita->exibe(); printf("\n");
+    printf("Sequencia de vertices visitados (bfs):"); sequenciaVisita->exibe(); printf("\n");
     
 }
 
@@ -260,22 +260,46 @@ void GRAFO::dfs(CARDINAL x){
     
     int verticeAtual = x;
     
-    f->push(x);
-    BOOL ida = FALSE;
-    while (f->tamanho() > 0){                                         //devo procurar ate nao existir mais arestas         
+    f->push(x);    
+    int passosVolta = 0;                                          //controlar a volta  
+    while (f->tamanho() > 0){                                         //devo procurar ate nao existir mais arestas                 
+        BOOL ida = FALSE;
         for (int i = 0; i < num_vertices; i++)        
-            if (matriz_adjacencia[verticeAtual][i] == 1 && verticeVisitado[i] == 0){ //garantir que nao seja aresta com o mesmo vertice
-                f->push(i+1);                       //empilhar APENAS o primeiro vertice adjacente ao vertice atual       
-                //f->pop(x);
-                ida = TRUE;
+            if (matriz_adjacencia[verticeAtual-1][i] == 1 && verticeVisitado[i] == 0){ //garantir que nao seja aresta com o mesmo vertice
+                f->push(i+1);                                         //empilhar APENAS o primeiro vertice adjacente ao vertice atual                       
+                if (verticeVisitado[verticeAtual-1] == 0){            //guardar caso o vertice nao tenha sido visitado, pois pode ser a VOLTA
+                    sequenciaVisita->adiciona(verticeAtual);
+                    verticeVisitado[verticeAtual-1] = 1;
+                }
+                f->pop(verticeAtual);                                
+                ida          = TRUE;
+                passosVolta  = 1;                                      //marca o inico dos passos de uma volta
+                verticeAtual = i+1;
                 break;
         }
-        if (ida == FALSE){
-            
+        if (ida == FALSE){   
+            if (verticeVisitado[verticeAtual-1] == 0){                  //marcar o vertice inicial do retorno
+                sequenciaVisita->adiciona(verticeAtual);
+                verticeVisitado[verticeAtual-1] = 1;
+            }
+            if (sequenciaVisita->get_elem(sequenciaVisita->tamanho() - passosVolta)->anterior != NULL){ //Nao estanos voltando ao vertice inicial
+                verticeAtual = sequenciaVisita->get_dado(sequenciaVisita->tamanho() - passosVolta);                        
+                passosVolta++;
+            }
+            else {  //Voltamos ao vertice INICIAL. Se NAO exitir aresta a ser explorada entao, acabou o algoritmo
+                int verticeInicial = sequenciaVisita->get_dado(0);                        
+                for (int i = 0; i < num_vertices; i++)        
+                        if (matriz_adjacencia[verticeInicial-1][i] == 1 && verticeVisitado[i] == 0){
+                            ida = TRUE;
+                            verticeAtual = verticeInicial;
+                        }
+                if (ida == FALSE){
+                    printf("Sequencia de vertices visitados (dfs):"); sequenciaVisita->exibe(); printf("\n");     
+                    return;
+                }
+            }
         }
-    }
-    
-    printf("Sequencia de vertices visitados:"); sequenciaVisita->exibe(); printf("\n");     
+    }        
 }
 
 void GRAFO::sp(CARDINAL s, CARDINAL t){
