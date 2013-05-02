@@ -31,8 +31,8 @@ void carrega_grafo (PCHAR nomearquivo)
     printf ("Erro na abertura do arquivo.\n");
     return;
   }  
-  else
-      printf ("\n Instancia : %s carregada com sucesso.\n",nomearquivo);
+  //else
+    //  printf ("\n Instancia : %s carregada com sucesso.\n",nomearquivo);
 }
 
 void exibe_menu_apresentacao(){
@@ -154,7 +154,7 @@ void gerencia_comando(int argc, char *argv[]){
             exibe_menu_erro(argv[0]);
         }
     else {
-        exibe_menu_apresentacao();
+        //exibe_menu_apresentacao();
         if (strcasecmp(argv[1],"read") == 0)           //OK, COMANDO DE LEITURA                              
            for (arg=2;arg < argc;arg++){
                if (strcasecmp(argv[arg],"mza") == 0){                   

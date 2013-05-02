@@ -245,7 +245,8 @@ void GRAFO::bfs(CARDINAL x){
         }
         
     }
-    printf("Sequencia de vertices visitados (bfs):"); sequenciaVisita->exibe(); printf("\n");
+    //printf("Sequencia de vertices visitados (bfs):"); 
+    sequenciaVisita->exibe(); printf("\n");
     
 }
 
@@ -256,8 +257,8 @@ void GRAFO::dfs(CARDINAL x){
     CARDINAL verticeVisitado[num_vertices];     
     for (int i = 0; i < num_vertices ; i++) verticeVisitado[i] = 0;   //ninguem foi vistado
         
-    sequenciaVisita->adiciona(x);                                      //marca a primeira visitação
-    verticeVisitado[x-1] = 1;
+    sequenciaVisita->adiciona(x);                                      //marca a primeira visitação. É importante marcar logo, pois                                                                        
+    verticeVisitado[x-1] = 1;                                          //pode não haver outros vértices.
     
     int verticeAtual = x;
     
@@ -266,7 +267,7 @@ void GRAFO::dfs(CARDINAL x){
     while (f->tamanho() > 0){                                         //devo procurar ate nao existir mais arestas                 
         BOOL ida = FALSE;
         for (int i = 0; i < num_vertices; i++)                  //Procura por adjacencias NAO exploradas
-            if (matriz_adjacencia[verticeAtual-1][i] == 1 && verticeVisitado[i] == 0){ //garantir que nao seja aresta com o mesmo vertice
+            if (matriz_adjacencia[verticeAtual-1][i] == 1 && verticeVisitado[i] == 0){ //garantir que nao seja aresta com o mesmo vertice (já visitado)
                 f->push(i+1);                                         //empilhar APENAS o primeiro vertice adjacente ao vertice atual                       
                 if (verticeVisitado[verticeAtual-1] == 0){            //guardar caso o vertice nao tenha sido visitado, pois pode ser a VOLTA
                     sequenciaVisita->adiciona(verticeAtual);
@@ -278,24 +279,25 @@ void GRAFO::dfs(CARDINAL x){
                 verticeAtual = i+1;
                 break;
         }
-        if (ida == FALSE){   
-            if (verticeVisitado[verticeAtual-1] == 0){                  //marcar o vertice inicial do retorno
+        if (ida == FALSE){                                              //Estamos fazendo o percurso de VOLTA em busca de arestas não exploradas
+            if (verticeVisitado[verticeAtual-1] == 0){                  //marcar como visitado (caso ele não tenha sido) o vertice inicial do retorno
                 sequenciaVisita->adiciona(verticeAtual);
                 verticeVisitado[verticeAtual-1] = 1;
             }
-            if (sequenciaVisita->get_elem(sequenciaVisita->tamanho() - passosVolta) != NULL){ //Se for NULL então voltamos um passo "depois" do vertice original
+            if (sequenciaVisita->get_elem(sequenciaVisita->tamanho() - passosVolta) != NULL){ //Se for NULL então voltamos um passo "além" do vertice original
                 verticeAtual = sequenciaVisita->get_dado(sequenciaVisita->tamanho() - passosVolta);                        
-                passosVolta++;
+                passosVolta++;                                          //variavel que controla a qtde de passos em regressão
             }
-            else {  //Voltamos ao vertice INICIAL. Se NAO exeitir aresta a ser explorada entao, acabou o algoritmo
+            else {  //NULL =  Voltamos ao vertice INICIAL. Se NAO existir aresta a ser explorada entao, acabou o algoritmo
                 int verticeInicial = sequenciaVisita->get_dado(0);                        
                 for (int i = 0; i < num_vertices; i++)                               //Procura outras adjacencias
                         if (matriz_adjacencia[verticeInicial-1][i] == 1 && verticeVisitado[i] == 0){  //Se encontrar, inicia TUDO novamente por outro caminho
-                            ida = TRUE;
+                            ida = TRUE;                                 //Avisa que devemos inicial novamente o caminho de IDA
                             verticeAtual = verticeInicial;
                         }
                 if (ida == FALSE){                            //Nao encontrou novas adjacencias, entao acabamos com a exploracao de profundidade
-                    printf("Sequencia de vertices visitados (dfs):"); sequenciaVisita->exibe(); printf("\n");     
+                    //printf("Sequencia de vertices visitados (dfs):"); 
+                    sequenciaVisita->exibe(); printf("\n");     
                     return;
                 }
             }            
