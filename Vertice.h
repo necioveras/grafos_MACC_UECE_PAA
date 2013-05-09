@@ -28,8 +28,9 @@ class VERTICE
     typedef struct TARESTA          //Estrutura para Aresta
     {
 	    BOOL    adjacencia;       //Define a adjacencia com um vertice (o 'outro lado' da aresta) definido pelo índice
-            REAL    peso;          //Peso associado à aresta 
-    }ARESTA[], *PARESTA;            //Matriz e ponteiro para aresta
+            REAL    peso;             //Peso associado à aresta 
+            BOOL    selecionada;      //Usado no algoritmo de de MST
+    }ARESTA[], *PARESTA;              //Matriz e ponteiro para aresta
 
   private:
 
@@ -48,11 +49,14 @@ class VERTICE
     BOOL  associa_aresta(ULONG id_v2, REAL peso);
     void  exibe          (PCHAR prompt);
     void  exibe_arestas (PCHAR prompt);
+    ULONG identifica_arestaMinima();
     
     inline ULONG grau_direcionado       (        )        {return num_arestas;} //Retorna o grau de um vertice
+    inline void  selecionaAresta        (ULONG indice)    { ptr_arestas[indice].selecionada = TRUE; }
+    inline BOOL  aresta_vistada         (ULONG indice)    { return ptr_arestas[indice].selecionada;}
 
     //retorna se ha ou nao adjacencia entre dois vertices
-    inline BOOL adjacencia_aresta  (ULONG indice)    {return ptr_arestas[indice].adjacencia;}
+    inline BOOL adjacencia_aresta  (ULONG indice)    {return ptr_arestas[indice].adjacencia;}    
     
     inline REAL peso_aresta (ULONG indice) {return ptr_arestas[indice].peso;}
     

@@ -36,7 +36,7 @@ void carrega_grafo (PCHAR nomearquivo)
 }
 
 void exibe_menu_apresentacao(){
-  printf ("         Construcao de GRAFO           \n")    ;
+  printf ("         Construcao de GRAFOS           \n")    ;
   printf ("         Mestrado Academico em Ciencia da Computacao\n")    ;
   printf ("         Universidade Estadual do Ceara\n")    ;
   printf ("         Projeto e Analise de algoritmos\n");
@@ -62,15 +62,28 @@ void exibe_menu_erro(PCHAR app){
     printf ("Sintaxe de uso:\n\t %s read <arq_grafo> <comando1> <parametro1> [... <comandoN> <parametroN>]\n\n", app);
     
     printf ("Comandos conhecidos:\n");
-    printf ("read\t<arq_grafo>, onde arq_grafo corresponde a um arquivo texto\n");
+    printf ("read\t<arq_grafo>,carrega um grafo onde arq_grafo corresponde a um arquivo de grafo.\n");
+    printf ("sobre\tserve para mostrar os dados do cabeçalho do aplicativo.\n");
+    printf ("help\t<comando_ou_subcomando> para mais informações sobre o item especificado.\n");
+    printf ("help all\tpara informações sobre todos os itens.\n\n");    
+    
+    printf ("Subcomandos de read conhecidos:\n");
     printf ("mza\t<sentido>, mostra a matriz de adjacencia onde sentido corresponde ao sentido da matriz de adjacencia\n");
     printf ("pesos\tserve para mostrar os vertices com suas arestas e pesos correspondentes\n");
-    printf ("bfs\t<x>, onde x é um dos vértices do grafo lido\n");
-    printf ("dfs\t<x>, onde x é um dos vértices do grafo lido\n");
-    printf ("mst\t<arq_grafo_saida>, onde arq_grafo_saida será um arquivo texto\n");
-    printf ("sp\t<s> <t>, onde s e t são dois vértices do grafo lido\n");
-    printf ("\nUse help <comando> para mais informações sobre um item.");
-    printf ("\nUse help all para informações sobre todos os item.\n\n");    
+    printf ("bfs\t<x>, realiza uma busca em largura onde x é um dos vértices do grafo lido\n");
+    printf ("dfs\t<x>, realiza uma busca em profundidade onde x é um dos vértices do grafo lido\n");
+    printf ("mst\t<arq_grafo_saida>, calcula e gera uma árvore mínima geradora onde arq_grafo_saida será um arquivo texto\n");
+    printf ("sp\t<s> <t>, calcula e mostra o caminho mínimo entre s e t onde s e t são dois vértices do grafo lido\n");
+    printf ("exporta\t <arquivo_saida>, exporta o grafo atual para um arquivo de saída onde arquivo_saida será o nome do arquivo a ser gerado\n");
+    
+}
+
+void exibe_formatoArquivo(){
+    printf("n\n");        
+    printf("x\ty\tz\n...\t...\t..., onde\n");
+    printf("n = número de vértices\n");        
+    printf("x e y = arestas pertencentes a um conjunto V = {1,2,...,n} de vertices\n");        
+    printf("z = peso de um aresta {x, y}\n"); 
 }
 
 
@@ -82,11 +95,7 @@ void exibe_ajuda(char *option){
     else if (strcasecmp(option,"read") == 0){
         printf("\nÉ usado para carregar a configuração de um grafo a partir de um arquivo.");
         printf("\nNo entando o formato do arquivo deve estar da seguinte forma:\n");        
-        printf("n\n");        
-        printf("x\ty\tz\n...\t...\t..., onde\n");
-        printf("n = número de vértices\n");        
-        printf("x e y = arestas pertencentes a um conjunto V = {1,2,...,n} de vertices\n");        
-        printf("z = peso de um aresta {x, y}\n");        
+        exibe_formatoArquivo();       
     }
     else if (strcasecmp(option,"mza") == 0){
         printf("\nÉ usado para exibir o resultado da leitura promovida pelo comando read.");
@@ -101,8 +110,15 @@ void exibe_ajuda(char *option){
         printf("1 = grafo direcionado. Sentido de VOLTA\n");
         printf("2 = grafo não direcionado.\n");
     }
+    else if (strcasecmp(option,"pesos") == 0){
+        printf("\nÉ usado para exibir os vértices do grafo com seus respectivos pesos.\n");        
+        printf("Sintaxe:\n");        
+        printf("\t\t\t%s\n", option);
+        printf("Parâmetro:\n");        
+        printf("Não há parâmetro(s)\n");       
+    }
     else if (strcasecmp(option,"bfs") == 0){
-        printf("\nÉ usado para executar a tecnica de Busca em Largura, do inlges Breadth-first search.\n");
+        printf("\nÉ usado para executar a tecnica de Busca em Largura, do ingles Breadth-first search.\n");
         printf("Sintaxe:\n");        
         printf("\t\t\t%s <x>\n", option);
         printf("Parâmetro:\n");        
@@ -112,14 +128,24 @@ void exibe_ajuda(char *option){
         printf("Será exibido uma sequencia de vertices visitados, iniciando no vertice x.\n");
     }
     else if (strcasecmp(option,"dfs") == 0){
-        printf("\nÉ usado para executar a tecnica de Busca em Profundidade, do inlges Depth-first search.\n");
+        printf("\nÉ usado para executar a tecnica de Busca em Profundidade, do ingles Depth-first search.\n");
         printf("Sintaxe:\n");        
         printf("\t\t\t%s <x>\n", option);
         printf("Parâmetro:\n");        
         printf("<x>\n");
         printf("Indica o vertice inicial da busca.\n");
         printf("Saída:\n");        
-        printf("Será exibido uma sequencia de vertices visitados, iniciando no vertice x.\n");
+        printf("Será exibido uma sequencia de vertices visitados, iniciando no vertice x.\n");        
+    }
+    else if (strcasecmp(option,"mst") == 0){
+        printf("\nÉ usado para calcular e gerar a árvore geradora mínima (Minimal Spanning Tree) por meio do algoritmo Prim.\n");
+        printf("Sintaxe:\n");        
+        printf("\t\t\t%s <arquivoSaida>\n", option);
+        printf("Parâmetro:\n");        
+        printf("<arquivoSaida>\n\n");
+        printf("Nome do arquivo que será gerado pelo algoritmo com a árvore geradora mínima.\n");
+        printf("Formato do arquivo:\n");        
+        exibe_formatoArquivo();
     }
     else if (strcasecmp(option,"sp") == 0){
         printf("\nÉ usado para executar a tecnica do caminho mínimo (short path) por meio do algoritmo de Bellman Ford.\n");
@@ -131,8 +157,28 @@ void exibe_ajuda(char *option){
         printf("<t>\n");
         printf("Indica o vertice final.\n");
         printf("Saída:\n");        
-        printf("d\nx1\tx2\t...\txp\t, onde\n d = valor do caminho mínimo entre <s> e <t>\ncada x representa os vertices que formam o caminho mínimo.");
+        printf("d\nx1\tx2\t...\txp\t, onde\nd = valor do caminho mínimo entre <s> e <t>\n"
+                "cada x representa os vertices que formam o caminho mínimo entre x1 e xp.\n"
+                "Lembrando que x1 = <s> e xp = <t>\n");
     }
+    else if (strcasecmp(option,"exporta") == 0){
+        printf("\nÉ usado para exportar o grafo atual em um arquivo de saída.\n");
+        printf("Sintaxe:\n");        
+        printf("\t\t\t%s <arquivo_saida>\n", option);
+        printf("Parâmetro:\n");        
+        printf("<arquivo_saida>\n");
+        printf("Será o nome do arquivo a ser gerado com os dados do grafo.\n");        
+        printf("O arquivo gerado possuirá o seguinte formato:\n");        
+        exibe_formatoArquivo();
+    }
+    else if (strcasecmp(option,"sobre") == 0){
+        printf("\nÉ usado para exibir as informações sobre os desenvolvedores.\n");
+        printf("Sintaxe:\n");        
+        printf("\t\t\t%s\n", option);
+        printf("Parâmetro:\n");        
+        printf("Não há parâmetro:\n");        
+    }
+    else exibe_menu_erro(option);
 }
 
 /*==========================================================================
@@ -151,35 +197,43 @@ void gerencia_comando(int argc, char *argv[]){
         if (argc >= 3)            
             exibe_ajuda(argv[2]);
         else                                        //AJUDA SEM ARGUMENTO                
-            exibe_menu_erro(argv[0]);
-        }
+            exibe_menu_erro(argv[0]);        
+    }
     else {
         //exibe_menu_apresentacao();
         if (strcasecmp(argv[1],"read") == 0)           //OK, COMANDO DE LEITURA                              
-           for (arg=2;arg < argc;arg++){
-               if (strcasecmp(argv[arg],"mza") == 0){                   
-                  int sentido = atoi(argv[++arg]);  
-                  G->gera_matrizAdjacencia(sentido);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)
-                  G->exibe_matrizAdjacencia(); 
-               }
-               else if (strcasecmp(argv[arg],"pesos") == 0)
-                   G->exibe_matrizComPesos();
-               else if (strcasecmp(argv[arg],"bfs") == 0){
-                  int x = atoi(argv[++arg]);  
-                  G->bfs(x);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
-               }
-               else if (strcasecmp(argv[arg],"dfs") == 0){
-                  int x = atoi(argv[++arg]);  
-                  G->dfs(x);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
-               }
-               else if (strcasecmp(argv[arg],"sp") == 0){
-                  int s = atoi(argv[++arg]);  
-                  int t = atoi(argv[++arg]);  
-                  G->sp(s,t);     //LE O PARAMETRO (itera DUAS VEZES a repetição para evitar engano de parametro)                   
-               }
-               else                                      //Parametro(s) para leitura (instâncias)
-                  carrega_grafo (argv[arg]);
-           }
+        for (arg=2;arg < argc;arg++){
+            if (strcasecmp(argv[arg],"mza") == 0){                   
+                int sentido = atoi(argv[++arg]);  
+                G->gera_matrizAdjacencia(sentido);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)
+                G->exibe_matrizAdjacencia(); 
+            }
+            else if (strcasecmp(argv[arg],"pesos") == 0)
+                G->exibe_matrizComPesos();
+            else if (strcasecmp(argv[arg],"bfs") == 0){
+                int x = atoi(argv[++arg]);  
+                G->bfs(x);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
+            }
+            else if (strcasecmp(argv[arg],"dfs") == 0){
+                int x = atoi(argv[++arg]);  
+                G->dfs(x);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
+            }
+            else if (strcasecmp(argv[arg],"mst") == 0){
+                PCHAR nomeArq = argv[++arg];  
+                G->mst(nomeArq);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
+            }
+            else if (strcasecmp(argv[arg],"exporta") == 0){
+                PCHAR nomeArq = argv[++arg];  
+                G->exportar(nomeArq);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
+            }
+            else if (strcasecmp(argv[arg],"sp") == 0){
+                int s = atoi(argv[++arg]);  
+                int t = atoi(argv[++arg]);  
+                G->sp(s,t);     //LE O PARAMETRO (itera DUAS VEZES a repetição para evitar engano de parametro)                   
+            }               
+            else                                      //Parametro(s) para leitura (instâncias)
+                carrega_grafo (argv[arg]);
+        }
     }  
 }
 

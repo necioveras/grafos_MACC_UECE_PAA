@@ -1,6 +1,7 @@
 #include "Grafo.h"
 #include "tipos.h"
 #include "Fila.h"
+#include "Lista.h"
 
 #include <stdio.h>
 /*==========================================================================
@@ -306,16 +307,130 @@ void GRAFO::dfs(CARDINAL x){
 }
 
 void GRAFO::sp(CARDINAL s, CARDINAL t){
+
+    // Atualiza as distãncias iniciais dos vértices: Inicializa com Zero o vértice inicial e com Infinito todos os outros vértices.
+    for (int p = 0; p < num_vertices; p++){ 
+        ptr_vertices[p].set_valor(INFINITO);
+	ptr_vertices[p].set_pi(p); 
+    }
     ptr_vertices[s-1].set_valor(0);
+    
+    // Relaxamento das arestas.  
+    for (int i = 0; i < num_vertices; i++){
+        for (int j = 0; j < qtde_arestas(); j++){
+            if (ptr_vertices[i].adjacencia_aresta(j)){    	
+                if (ptr_vertices[j].get_valor() > ptr_vertices[i].get_valor() + ptr_vertices[i].peso_aresta(j)){
+		 	ptr_vertices[j].set_valor(ptr_vertices[i].get_valor() + ptr_vertices[i].peso_aresta(j));
+		    	ptr_vertices[j].set_pi(i);  
+		}
+	     }
+        }
+    }
+    
+    // Verificação de ciclos negativos.
     for (int i = 0; i < num_vertices; i++){
         for (int j = 0; j < num_vertices; j++){
             if (ptr_vertices[i].adjacencia_aresta(j))
-                if (ptr_vertices[j].get_valor() > ptr_vertices[i].get_valor() + ptr_vertices[i].peso_aresta(j))
-                    ptr_vertices[j].set_valor(ptr_vertices[i].get_valor() + ptr_vertices[i].peso_aresta(j));
+                if (ptr_vertices[j].get_valor() > ptr_vertices[i].get_valor() + ptr_vertices[i].peso_aresta(j)){
+                  printf("Existe um ciclo negativo\n");
+                  return;
+                }
         }
     }
-    exibe_Valoresvertices();
+    
+    // PRIMEIRA LINHA: Exibição dos valor do menor caminho entre s e t
+    printf("%ld\n", ptr_vertices[t-1].get_valor());
+    
+    // SEGUNDA LINHA: Exibição da sequencia de vertices correspondentes a um caminho de s a t em G.
+    int f = t - 1;
+    PLISTA l = new LISTA();
+
+    while(ptr_vertices[f].get_pi() != f){
+	l->adiciona(f + 1);
+	f = ptr_vertices[f].get_pi();
+    }
+
+    l->adiciona(s);
+    for(int z = l->tamanho() - 1; z>=0; z--){
+	printf("%d\t",l->get_dado(z));
+    }
+    printf("\n");
 }
+
+void GRAFO::exportar(PCHAR nomearquivo){
+    FILE     *ptr_file              ;
+
+  if ((ptr_file = fopen (nomearquivo,"w")) == NULL)
+    return;
+  
+  fprintf (ptr_file, "%ld\n", num_vertices);   //Total de vertices  
+  
+  for (int i = 0; i < num_vertices; i++)  
+      for (int j = 0; j < num_vertices; j++)  
+          if (ptr_vertices[i].adjacencia_aresta(j) == TRUE)
+              fprintf(ptr_file, "%d\t%d\t%.1f\n", i+1, j+1, ptr_vertices[i].peso_aresta(j));
+  
+  fclose (ptr_file);
+}
+
+ULONG GRAFO::identifica_aresta_minima_nao_visitada(PLISTA &vertices, ULONG &v1, ULONG &v2){
+    ULONG minimo = INFINITO;
+    float peso   = 0;                              //var. para ajuste de pesos para os grafos nao direcionados
+    for (int i = 0; i < vertices->tamanho(); i++){
+        for (int j = 0; j < num_vertices; j++){
+            if (matriz_adjacencia[vertices->get_dado(i)][j] == TRUE){
+                peso = ptr_vertices[vertices->get_dado(i)].peso_aresta(j) + ptr_vertices[j].peso_aresta(vertices->get_dado(i));
+                if ((ptr_vertices[vertices->get_dado(i)].aresta_vistada(j) == FALSE) && (ptr_vertices[j].aresta_vistada(vertices->get_dado(i)) == FALSE))
+                    if (minimo > peso && vertices->busca_elem(j) == FALSE){
+                        //printf("\nLista (T) %d Minimo (anterior=%ld) eh a aresta %d e %d com peso %f\n", l->tamanho(),minimo, l->get_dado(i)+1, j+1, peso);                        
+                        minimo = peso;                        
+                        v1 = vertices->get_dado(i);
+                        v2 = j;                        
+                    }
+            }                
+        }
+    }
+    ptr_vertices[v1].selecionaAresta(v2);
+    return minimo;
+}
+
+void GRAFO::mst(PCHAR nomearquivo){  
+    
+    FILE     *ptr_file;    
+
+    if ((ptr_file = fopen (nomearquivo,"w+")) == NULL)
+        return;     
+    
+    gera_matrizAdjacencia(2);      //cria estrutura NAO direcionada
+    PLISTA l = new LISTA();
+    PLISTA arestas = new LISTA();
+        
+    l->adiciona(0);                //Vertice inicial
+    ULONG v1, v2;
+    int i = 0;
+    while (i < num_vertices -1){        
+        ULONG peso = identifica_aresta_minima_nao_visitada(l, v1, v2);
+        l->adiciona(v2);  
+        arestas->adiciona(v1);
+        arestas->adiciona(v2);        
+        i++;
+    }               
+    
+    fprintf (ptr_file, "%d\n", l->tamanho());   //Total de vertices  
+    i = 0;
+    while (i < arestas->tamanho()){             //total de arestas
+        int v1, v2;
+        v1 = arestas->get_dado(i);
+        v2 = arestas->get_dado(i+1);
+        i = i + 2;
+        float peso = ptr_vertices[v1].peso_aresta(v2) + ptr_vertices[v2].peso_aresta(v1);
+        fprintf(ptr_file, "%d\t%d\t%.1f\n", v1+1, v2+1, peso);
+    }
+  
+    fclose (ptr_file);
+    
+}
+
 
 
 BOOL GRAFO::existe_aresta (ULONG v1, ULONG v2, CARDINAL sentido)

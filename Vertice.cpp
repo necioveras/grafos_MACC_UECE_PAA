@@ -52,6 +52,7 @@ BOOL VERTICE::cria_linhaAdjencia(CARDINAL tamanho){
     for (CARDINAL i; i < tamanho; i++){
         arestas[i].adjacencia = FALSE;
         arestas[i].peso       = 0;
+        arestas[i].selecionada= FALSE;
     }
     
     libera();
@@ -71,6 +72,14 @@ BOOL VERTICE::associa_aresta(ULONG id_v2, REAL peso){
   }  
   return FALSE;
   
+}
+
+ULONG VERTICE::identifica_arestaMinima(){
+    REAL minimo = ptr_arestas[0].peso;
+    for (int i = 1; i < num_arestas; i++)
+        if (minimo < ptr_arestas[i].peso)
+            minimo = ptr_arestas[i].peso;
+    return minimo;
 }
 
 

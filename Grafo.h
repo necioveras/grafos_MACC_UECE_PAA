@@ -11,6 +11,7 @@
 
 #include "Vertice.h"
 #include "tipos.h"
+#include "Lista.h"
 
 
 /*==========================================================================
@@ -56,11 +57,13 @@ class GRAFO
    ~GRAFO   (); //Destrutor  - é chamado sempre que um objeto for desmontado   
 
     BOOL    carrega (PCHAR nomearquivo);    
+    void    exportar(PCHAR nomearquivo);
     void    exibe   (		       );
     void    exibe_matrizAdjacencia();
     void    exibe_matrizComPesos();
     void    exibe_Valoresvertices();
     void    gera_matrizAdjacencia(CARDINAL sentido);
+    ULONG   identifica_aresta_minima_nao_visitada(PLISTA &vertices, ULONG &v1, ULONG &v2);    //Devolve o peso minimo
     
     inline  ULONG    qtde_vertices (  )  {return num_vertices;}
 
@@ -72,6 +75,7 @@ class GRAFO
     void    bfs (CARDINAL x); 
     void    dfs (CARDINAL x); 
     void    sp  (CARDINAL s, CARDINAL t);
+    void    mst (PCHAR nomearquivo);
 };
 
 
