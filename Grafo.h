@@ -57,7 +57,8 @@ class GRAFO
    ~GRAFO   (); //Destrutor  - é chamado sempre que um objeto for desmontado   
 
     BOOL    carrega (PCHAR nomearquivo);    
-    void    exportar(PCHAR nomearquivo);
+    void    gera_instancia_aleatoria(int numMaxVertices, int numMaxArestas, int maxPeso);
+    
     void    exibe   (		       );
     void    exibe_matrizAdjacencia();
     void    exibe_matrizComPesos();
@@ -76,6 +77,7 @@ class GRAFO
     void    dfs (CARDINAL x); 
     void    sp  (CARDINAL s, CARDINAL t);
     void    mst (PCHAR nomearquivo);
+    void    exportar(PCHAR nomearquivo);
 };
 
 

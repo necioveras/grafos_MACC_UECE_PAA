@@ -4,6 +4,7 @@
 #include "Lista.h"
 
 #include <stdio.h>
+#include <time.h>
 /*==========================================================================
   =                                                                        =
   =                                                                        =
@@ -86,6 +87,48 @@ BOOL GRAFO::carrega (PCHAR nomearquivo)
   gera_matrizAdjacencia(2);   //gera a matriz de adjacencia NAO DIRECIONADA com os vertices carregados.
 
   return TRUE            ;
+}
+
+void GRAFO::gera_instancia_aleatoria(int numMaxVertices, int numMaxArestas, int maxPeso){
+
+  PVERTICE  vertices              ;
+  ULONG     i,id_v1, id_v2        ;  //Armazenar localmente todos as arestas com seus pesos do arquivo
+  REAL      peso                  ;
+  ULONG     n                     ;  //Numero de Vertices
+  
+  srand(time(NULL));
+  n = (rand() % numMaxVertices+1);
+
+  vertices = new VERTICE[n];  //Aloca os Vertices !!!!!!
+  if (isnull (vertices))
+  {
+    printf ("\nSem memoria para a construcao do GRAFO!\n");
+    return;
+  }
+
+  for (int i = 0 ; i < n; i++)
+      vertices[i].cria_linhaAdjencia(n);             //Cria, para cada vertice, a linha de adjacencia 
+
+  int retorno = rand() % numMaxArestas;
+  // le informacoes sobre os vertices - a partir da segunda linha do arquivo
+  while (retorno >= 0) {    
+     id_v1 = (rand() % n)+1;
+     id_v2 = (rand() % n)+1;
+     peso  = rand()  % maxPeso;
+     //Associa a aresta lida para o vértice atual
+     vertices[id_v1-1].associa_aresta(id_v2-1, peso);
+     retorno--;
+  }
+
+  // libera arestas anteriores, se existirem
+  libera ();
+
+  // atualiza dados da mochila
+  ptr_vertices = vertices;
+  num_vertices = n       ;
+  
+  gera_matrizAdjacencia(2);   //gera a matriz de adjacencia NAO DIRECIONADA com os vertices carregados.
+   
 }
 
 

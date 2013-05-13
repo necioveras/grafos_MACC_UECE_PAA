@@ -22,17 +22,17 @@ PGRAFO G;   //Variável GLOBAL p/ manipular o grafo
 void carrega_grafo (PCHAR nomearquivo)
 {
   // mostra nome da instancia  
-
+    
   G = new GRAFO();
 
   // carrega grafo do arquivo
-  if (G->carrega (nomearquivo) == FALSE)
-  {
-    printf ("Erro na abertura do arquivo.\n");
-    return;
-  }  
-  //else
-    //  printf ("\n Instancia : %s carregada com sucesso.\n",nomearquivo);
+  if (nomearquivo != NULL)
+    if (G->carrega (nomearquivo) == FALSE)
+    {
+        printf ("Erro na abertura do arquivo.\n");
+        return;
+    }  
+  
 }
 
 void exibe_menu_apresentacao(){
@@ -63,11 +63,11 @@ void exibe_menu_erro(PCHAR app){
     
     printf ("Comandos conhecidos:\n");
     printf ("read\t<arq_grafo>,carrega um grafo onde arq_grafo corresponde a um arquivo de grafo.\n");
-    printf ("sobre\tserve para mostrar os dados do cabeçalho do aplicativo.\n");
+    printf ("gerar\t <max_vertices> <max_arestas> <max_pesos>, serve para gerar um grafo com valores aleatórios.\n");
+    printf ("sobre\tserve para mostrar os dados do cabeçalho do aplicativo.\n");    
     printf ("help\t<comando_ou_subcomando> para mais informações sobre o item especificado.\n");
-    printf ("help all\tpara informações sobre todos os itens.\n\n");    
     
-    printf ("Subcomandos de read conhecidos:\n");
+    printf ("\nSubcomandos de read/gerar/help conhecidos:\n");
     printf ("mza\t<sentido>, mostra a matriz de adjacencia onde sentido corresponde ao sentido da matriz de adjacencia\n");
     printf ("pesos\tserve para mostrar os vertices com suas arestas e pesos correspondentes\n");
     printf ("bfs\t<x>, realiza uma busca em largura onde x é um dos vértices do grafo lido\n");
@@ -90,10 +90,9 @@ void exibe_formatoArquivo(){
 void exibe_ajuda(char *option){
     limpa_tela();
     printf("comando usado: help %s\n", option);
-    if (strcasecmp(option,"all") == 0)
-        printf("\nTodos ....\n");
-    else if (strcasecmp(option,"read") == 0){
-        printf("\nÉ usado para carregar a configuração de um grafo a partir de um arquivo.");
+    if (strcasecmp(option,"read") == 0){
+        printf("\nÉ usado para carregar a configuração de um grafo a partir de um arquivo.\n"
+                "Vale ressaltar que este comando não funciona em conjunto com o comando gerar.\n");
         printf("\nNo entando o formato do arquivo deve estar da seguinte forma:\n");        
         exibe_formatoArquivo();       
     }
@@ -171,6 +170,19 @@ void exibe_ajuda(char *option){
         printf("O arquivo gerado possuirá o seguinte formato:\n");        
         exibe_formatoArquivo();
     }
+    else if (strcasecmp(option,"gerar") == 0){
+        printf("\nÉ usado para gerar um grafo sem o uso de um arquivo texto. Ele criará um grafo com dados aleatórios\n"
+                "Vale ressaltar que este comando não funciona em conjunto com o comando read.\n\n");
+        printf("Sintaxe:\n");        
+        printf("\t\t\t%s <max_vertices> <max_arestas> <max_pesos>\n", option);
+        printf("Parâmetros:\n");        
+        printf("<max_vertices>\n");        
+        printf("Determina o número máximo de vértices que o grafo poderá possuir.\n");        
+        printf("<max_arestas>\n");        
+        printf("Determina o número máximo de arestas que o grafo poderá possuir entre dois vértices\n");        
+        printf("<max_pesos>\n");        
+        printf("Determina o valor máximo de peso que uma determinada aresta poderá possuir.\n");        
+    }
     else if (strcasecmp(option,"sobre") == 0){
         printf("\nÉ usado para exibir as informações sobre os desenvolvedores.\n");
         printf("Sintaxe:\n");        
@@ -201,38 +213,47 @@ void gerencia_comando(int argc, char *argv[]){
     }
     else {
         //exibe_menu_apresentacao();
-        if (strcasecmp(argv[1],"read") == 0)           //OK, COMANDO DE LEITURA                              
-        for (arg=2;arg < argc;arg++){
-            if (strcasecmp(argv[arg],"mza") == 0){                   
-                int sentido = atoi(argv[++arg]);  
-                G->gera_matrizAdjacencia(sentido);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)
-                G->exibe_matrizAdjacencia(); 
-            }
-            else if (strcasecmp(argv[arg],"pesos") == 0)
-                G->exibe_matrizComPesos();
-            else if (strcasecmp(argv[arg],"bfs") == 0){
-                int x = atoi(argv[++arg]);  
-                G->bfs(x);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
-            }
-            else if (strcasecmp(argv[arg],"dfs") == 0){
-                int x = atoi(argv[++arg]);  
-                G->dfs(x);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
-            }
-            else if (strcasecmp(argv[arg],"mst") == 0){
-                PCHAR nomeArq = argv[++arg];  
-                G->mst(nomeArq);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
-            }
-            else if (strcasecmp(argv[arg],"exporta") == 0){
-                PCHAR nomeArq = argv[++arg];  
-                G->exportar(nomeArq);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
-            }
-            else if (strcasecmp(argv[arg],"sp") == 0){
-                int s = atoi(argv[++arg]);  
-                int t = atoi(argv[++arg]);  
-                G->sp(s,t);     //LE O PARAMETRO (itera DUAS VEZES a repetição para evitar engano de parametro)                   
-            }               
-            else                                      //Parametro(s) para leitura (instâncias)
-                carrega_grafo (argv[arg]);
+        if ((strcasecmp(argv[1],"read") == 0) || (strcasecmp(argv[1],"gerar") == 0))           //OK, COMANDO DE LEITURA                              
+        for (arg=2;arg < argc;arg++){            
+                if (strcasecmp(argv[arg],"mza") == 0){                   
+                    int sentido = atoi(argv[++arg]);  
+                    G->gera_matrizAdjacencia(sentido);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)
+                    G->exibe_matrizAdjacencia(); 
+                }
+                else if (strcasecmp(argv[arg],"pesos") == 0)
+                    G->exibe_matrizComPesos();
+                else if (strcasecmp(argv[arg],"bfs") == 0){
+                    int x = atoi(argv[++arg]);  
+                    G->bfs(x);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
+                }
+                else if (strcasecmp(argv[arg],"dfs") == 0){
+                    int x = atoi(argv[++arg]);  
+                    G->dfs(x);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
+                }
+                else if (strcasecmp(argv[arg],"mst") == 0){
+                    PCHAR nomeArq = argv[++arg];  
+                    G->mst(nomeArq);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
+                }
+                else if (strcasecmp(argv[arg],"exporta") == 0){
+                    PCHAR nomeArq = argv[++arg];  
+                    G->exportar(nomeArq);     //LE O PARAMETRO (itera a repetição para evitar engano de parametro)                   
+                }
+                else if (strcasecmp(argv[arg],"sp") == 0){
+                    int s = atoi(argv[++arg]);  
+                    int t = atoi(argv[++arg]);  
+                    G->sp(s,t);     //LE O PARAMETRO (itera DUAS VEZES a repetição para evitar engano de parametro)                   
+                }               
+                else                                      //Parametro(s) para leitura (instâncias) do comando read
+                    if (strcasecmp(argv[1],"read") == 0)
+                        carrega_grafo (argv[arg]);
+                    else
+                        if (strcasecmp(argv[1],"gerar") == 0){                   //verifica o primeiro argumento se NAO eh o comando read
+                            int maxV = atoi(argv[arg++]);                  
+                            int maxA = atoi(argv[arg++]);  
+                            int maxP = atoi(argv[arg]);  
+                            carrega_grafo(NULL);
+                            G->gera_instancia_aleatoria(maxV, maxA, maxP);
+                        }
         }
     }  
 }
