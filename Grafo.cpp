@@ -417,6 +417,12 @@ void GRAFO::exportar(PCHAR nomearquivo){
 }
 
 ULONG GRAFO::identifica_aresta_minima_nao_visitada(PLISTA &vertices, ULONG &v1, ULONG &v2){
+/*.......................................................................
+ Recebe uma LISTA de vertices e identifica qual a aresta mínima NÃO visitada. 
+ Devolve por referência os dois vértices envolvidos na aresta
+  .......................................................................
+*/
+
     ULONG minimo = INFINITO;
     float peso   = 0;                              //var. para ajuste de pesos para os grafos nao direcionados
     for (int i = 0; i < vertices->tamanho(); i++){
@@ -452,7 +458,7 @@ void GRAFO::mst(PCHAR nomearquivo){
     ULONG v1, v2;
     int i = 0;
     while (i < num_vertices -1){        
-        ULONG peso = identifica_aresta_minima_nao_visitada(l, v1, v2);
+        ULONG peso = identifica_aresta_minima_nao_visitada(l, v1, v2);  //função chave para o funcionamento do algoritmo. Ela usa uma LISTA de vertices para buscar a identificação
         l->adiciona(v2);  
         arestas->adiciona(v1);
         arestas->adiciona(v2);        

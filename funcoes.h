@@ -61,13 +61,13 @@ void exibe_menu_erro(PCHAR app){
     printf ("Error: comandos não especificados\n");
     printf ("Sintaxe de uso:\n\t %s read <arq_grafo> <comando1> <parametro1> [... <comandoN> <parametroN>]\n\n", app);
     
-    printf ("Comandos conhecidos:\n");
+    printf ("Comandos básicos conhecidos:\n");
     printf ("read\t<arq_grafo>,carrega um grafo onde arq_grafo corresponde a um arquivo de grafo.\n");
     printf ("gerar\t <max_vertices> <max_arestas> <max_pesos>, serve para gerar um grafo com valores aleatórios.\n");
     printf ("sobre\tserve para mostrar os dados do cabeçalho do aplicativo.\n");    
     printf ("help\t<comando_ou_subcomando> para mais informações sobre o item especificado.\n");
     
-    printf ("\nSubcomandos de read/gerar/help conhecidos:\n");
+    printf ("\nSubcomandos reconhecidos:\n");
     printf ("mza\t<sentido>, mostra a matriz de adjacencia onde sentido corresponde ao sentido da matriz de adjacencia\n");
     printf ("pesos\tserve para mostrar os vertices com suas arestas e pesos correspondentes\n");
     printf ("bfs\t<x>, realiza uma busca em largura onde x é um dos vértices do grafo lido\n");
@@ -97,7 +97,7 @@ void exibe_ajuda(char *option){
         exibe_formatoArquivo();       
     }
     else if (strcasecmp(option,"mza") == 0){
-        printf("\nÉ usado para exibir o resultado da leitura promovida pelo comando read.");
+        printf("\nÉ usado para exibir o resultado da leitura promovida por um comando básico.");
         printf("\nA visualização se dá por uma matriz de adjacência onde os vértices são representados\n"
                 "por uma matriz de 0 e 1 (lógica) indicando a presença ou não de uma aresta entre os vértices envolvidos.\n");               
         printf("Sintaxe:\n");        
@@ -147,7 +147,7 @@ void exibe_ajuda(char *option){
         exibe_formatoArquivo();
     }
     else if (strcasecmp(option,"sp") == 0){
-        printf("\nÉ usado para executar a tecnica do caminho mínimo (short path) por meio do algoritmo de Bellman Ford.\n");
+        printf("\nÉ usado para executar a tecnica do caminho mínimo (short path) entre dois vértices por meio do algoritmo de Bellman Ford.\n");
         printf("Sintaxe:\n");        
         printf("\t\t\t%s <s> <p>\n", option);
         printf("Parâmetro:\n");        
